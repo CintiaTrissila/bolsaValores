@@ -59,11 +59,13 @@ public class EmpresaServiceImpl implements EmpresaService{
 	}
 	
 	public void SimuladorConexaoPreco() {
+		System.out.println("início random");
 		List<Empresa> empresas = list();
 		for(Empresa empresa : empresas) {
 			empresa.setValorAcao(randomNumberImpl.randomValorAcao());
 			empresaRepository.save(empresa);
 		}
+		System.out.println("fim random");
 	}
 
 }

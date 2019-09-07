@@ -27,7 +27,7 @@ public class TransacaoServiceImpl implements TransacaoService{
 	private EmailServiceImpl emailServiceImpl;
 	
 	@Override
-	public Transacao save(Integer id, Transacao transacao) {
+	public Transacao save(Transacao transacao) {
 		//negociacao.setConta(contaServiceImpl.listaContaPeloId(id));
 		return transacaoRepository.save(transacao);
 	}
@@ -42,11 +42,12 @@ public class TransacaoServiceImpl implements TransacaoService{
 		transacao.setTipoTransacao(TipoTransacao.COMPRA);
 		transacao.setData(LocalDateTime.now());
 		transacao.setEmpresa(monitoramento.getEmpresa());
+		transacao.setConta(conta);
 		transacao.setQuantidadeAcoes(acoes);
 		transacao.setValor(empresa.getValorAcao());
 		conta.setSaldo(0.0);
 		conta.setNumeroAcoes(acoes);
-		Transacao tra = save(conta.getId(), transacao);
+		Transacao tra = save(transacao);
 		contaServiceImpl.save(conta);
 
 		emailServiceImpl.sendEmail(tra, monitoramento, empresa);
@@ -63,10 +64,11 @@ public class TransacaoServiceImpl implements TransacaoService{
 		transacao.setTipoTransacao(TipoTransacao.VENDA);
 		transacao.setData(LocalDateTime.now());
 		transacao.setEmpresa(monitoramento.getEmpresa());
+		transacao.setConta(conta);
 		transacao.setQuantidadeAcoes(conta.getNumeroAcoes());
 		conta.setSaldo(conta.getNumeroAcoes() * empresa.getValorAcao());
 		conta.setNumeroAcoes(0.0);
-		Transacao tra = save(conta.getId(), transacao);
+		Transacao tra = save(transacao);
 		contaServiceImpl.save(conta);
 
 		emailServiceImpl.sendEmail(tra, monitoramento, empresa);
@@ -76,16 +78,22 @@ public class TransacaoServiceImpl implements TransacaoService{
 	@Override
 	public void compraVendaAcoes(Integer id) {
 		Conta conta = contaServiceImpl.listById(id);
+		System.out.println("carregou conta ");
 		List<Monitoramento> monitoramentos = monitoramentoServiceImpl.monitoramentosByConta(conta);
+		System.out.println("carregou monitoramentos");
 		for (Monitoramento monitoramento : monitoramentos) {
 			Empresa empresa = monitoramento.getEmpresa();
 			if (monitoramento.getConta().getSaldo() > 0) {
 				if (monitoramento.getPrecoCompra() >= empresa.getValorAcao()) {
+					System.out.println("Vai comprar");
 					compra(monitoramento);
+					System.out.println("Comprou");
 				}
 			} else if (monitoramento.getConta().getNumeroAcoes() > 0) {
 				if (empresa.getValorAcao() >= monitoramento.getPrecoVenda()) {
+					System.out.println("Vai vender");
 					venda(monitoramento);
+					System.out.println("Vendeu");
 				}
 			}
 		}
@@ -130,8 +138,9 @@ public class TransacaoServiceImpl implements TransacaoService{
 	}
 
 	@Override
-	public List<Transacao> listTransacoes(Integer id) {
-		return transacaoRepository.findByConta(contaServiceImpl.listById(id));
+	public List<Transacao> listTransacoes() {
+		return transacaoRepository.findAll();
+		//return transacaoRepository.findByConta(contaServiceImpl.listById(id));
 	}
 
 }

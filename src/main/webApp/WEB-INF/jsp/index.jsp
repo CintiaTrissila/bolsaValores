@@ -20,6 +20,8 @@
       <a href="${pageContext.request.contextPath}/conta/list">Contas</a>
       <p/> 
       <a href="${pageContext.request.contextPath}/monitoramento/list">Monitoramentos</a>   
+      <p/> 
+      <a href="${pageContext.request.contextPath}/transacao/list">Transações</a>   
       
       <p/>
       <p/>

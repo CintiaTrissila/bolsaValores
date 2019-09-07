@@ -7,7 +7,7 @@ import br.com.bolsaValores.model.Transacao;
 
 public interface TransacaoService {
 	
-	Transacao save(Integer id, Transacao transacao);
+	Transacao save(Transacao transacao);
 
 	Transacao compra(Monitoramento monitoramento);
 
@@ -19,6 +19,6 @@ public interface TransacaoService {
 	
 	void deleteById(Integer id);
 	
-	List<Transacao> listTransacoes(Integer id);
+	List<Transacao> listTransacoes();
 	
 }

@@ -21,6 +21,8 @@ public class IndexController {
 	private TransacaoServiceImpl transacaoServiceImpl;
 	@Autowired
 	private EmpresaServiceImpl empresaServiceImpl;
+	@Autowired
+	private BolsaThread t;
 	
 	@RequestMapping(value = { "/", "/index" }, method = RequestMethod.GET)
     public String index(Model model) {
@@ -33,8 +35,7 @@ public class IndexController {
     }
 	
     @GetMapping("/start")
-	public String start() {
-		BolsaThread t = new BolsaThread();
+	public String start() {	
         t.start();
         return "index";
 	}
